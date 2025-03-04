@@ -83,9 +83,9 @@ fn main() -> Result<(), anyhow::Error> {
 
     // Проверяем, что у нас есть средства
     let balance = wallet.balance();
-    println!("Wallet balance: {} sats", balance.confirmed);
+    println!("Wallet balance: {} sats", balance.total());
 
-    if balance.confirmed == Amount::from_sat(0) {
+    if balance.total() == Amount::from_sat(0) {
         anyhow::bail!("No funds in wallet. Please send coins to the deposit address.");
     }
 
@@ -98,7 +98,7 @@ fn main() -> Result<(), anyhow::Error> {
     tx_builder
         .add_recipient(
             recipient.assume_checked().script_pubkey(),
-            Amount::from_sat((balance.confirmed.to_sat() / 2) as u64),
+            Amount::from_sat((balance.total().to_sat() / 2) as u64),
         )
         .fee_rate(FeeRate::from_sat_per_vb(2).unwrap());
 
